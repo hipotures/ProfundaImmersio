@@ -4,7 +4,7 @@ Profunda Immersio is a VR falling-block puzzle game inspired by Tetris. The proj
 
 The full product requirements are written in Polish in [`prd.txt`](prd.txt). For convenience a short English summary is available in [README.en.md](README.en.md).
 
-The repository currently contains only documentation and initial configuration. Source code will live in the `src/` directory while game assets such as sounds or models belong in `assets/`.
+The repository currently contains documentation, initial configuration, and a minimal `package.json`. Source code will live in the `src/` directory while game assets such as sounds or models belong in `assets/`.
 
 ## Getting Started
 
@@ -13,11 +13,14 @@ The repository currently contains only documentation and initial configuration. 
 git clone <this repo>
 cd ProfundaImmersio
 
-# Install dependencies (to be added later)
+# Install dependencies
 npm install
 
-# Start development server (placeholder)
+# Start development server
 npm run dev
+
+# Run tests (currently none)
+npm test
 ```
 
 A-Frame and Vite are expected development tools. `config/config.yaml` stores gameplay options such as board sizes, depth colors and block definitions. See [docs/config-schema.md](docs/config-schema.md) for details.
