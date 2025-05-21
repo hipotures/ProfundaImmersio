@@ -1,0 +1,41 @@
+boardSizes:
+  - name: small
+    dimensions: [3, 3, 12]
+  - name: medium
+    dimensions: [5, 5, 15]
+  - name: large
+    dimensions: [7, 7, 20]
+depthColors:
+  - "#ff0000"
+  - "#00ff00"
+  - "#0000ff"
+  - "#ffff00"
+  - "#ff00ff"
+blocks:
+  shapes:
+    - name: I
+      pattern: |
+        XXXX
+    - name: L
+      pattern: |
+        X..
+        XXX
+scoring:
+  lineClearBase: 100
+  accelerationFactor: 0.1
+difficultyLevels:
+  easy:
+    startTime: 10
+  medium:
+    startTime: 8
+  hard:
+    startTime: 6
+controls:
+  rotationSystem: [SRS, ARS]
+  joystickMapping:
+    left:
+      x: rotateY
+      y: rotateX
+    right:
+      x: moveX
+      y: moveZ
