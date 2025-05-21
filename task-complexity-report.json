@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-15T16:57:11.135Z",
+    "tasksAnalyzed": 23,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": false
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Project Setup: Vite, A-Frame, TypeScript, Basic PWA",
+      "complexityScore": 4,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the 'Project Setup' task into subtasks covering: 1. Vite/TypeScript project initialization. 2. A-Frame library installation and basic scene setup in HTML. 3. PWA manifest.json creation and configuration. 4. Basic service worker (service-worker.js) implementation for initial caching. 5. Build process verification and PWA installability check using Lighthouse.",
+      "reasoning": "Involves multiple distinct setup steps for different technologies (Vite, TS, A-Frame, PWA). Each step is relatively standard but contributes to overall setup effort and requires individual verification."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "YAML Configuration System Setup",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Decompose the 'YAML Configuration System Setup' into subtasks for: 1. `js-yaml` library installation and import. 2. Definition of the initial `config.yaml` schema and content. 3. Implementation of a TypeScript module (`configLoader.ts`) for loading, parsing, and providing a typed interface for the configuration. 4. Unit testing for the config loader, including error handling for invalid YAML or missing keys.",
+      "reasoning": "Requires library integration, schema design for configuration data, typed data loading logic, and unit testing, making it moderately complex with distinct logical parts."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Game Board (Studnia) Generation",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'Game Board (Studnia) Generation' into subtasks for: 1. Creating the basic `game-board` A-Frame component structure. 2. Implementing logic within the component to read board dimensions and depth colors from the parsed YAML configuration. 3. Dynamically generating studnia walls and floor using A-Frame primitives based on config. 4. Implementing grid line rendering for each depth layer (e.g., using `<a-plane>` or `aframe-line-component`). 5. Applying initial wall styling and depth-based coloring as specified.",
+      "reasoning": "Involves creating a dynamic A-Frame component, 3D geometry generation based on configuration, handling visual representation of depth layers, and applying styling. This is a core visual and structural element with significant 3D logic."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Block Definition and Spawning Mechanism",
+      "complexityScore": 3,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Decompose 'Block Definition and Spawning Mechanism' into subtasks for: 1. Creating the initial `game-block` A-Frame component (e.g., rendering a simple `<a-box>`). 2. Implementing a `spawnNewBlock(shape)` function in the main game logic. 3. Ensuring the spawned block is correctly positioned at the predefined starting point at the top of the studnia.",
+      "reasoning": "Focuses on creating a basic block entity and a function to spawn it. Initially simple, as complex shapes and behaviors are deferred to a later task (Task 14)."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Block Movement (Right Controller: XZ, Y-up)",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'Block Movement (Right Controller: XZ, Y-up)' into subtasks for: 1. Setting up A-Frame event listeners for `axismove` on the right VR controller. 2. Implementing joystick input processing for XZ plane movement, including deadzone and threshold logic. 3. Implementing Y-axis (upward) movement logic based on controller input. 4. Updating the active block's A-Frame entity position based on processed input. 5. Implementing boundary checks to constrain block movement within studnia walls and ceiling.",
+      "reasoning": "Involves VR controller input handling, 3D movement logic, input processing (deadzone/threshold), and crucial boundary collision detection, making it a key interactive element with moderate complexity."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Block Hard Drop (Right Controller: Trigger)",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Decompose 'Block Hard Drop' into subtasks for: 1. Setting up A-Frame event listener for the right controller's trigger button. 2. Implementing logic to calculate the final landing Y-coordinate by checking for collisions with the studnia floor. 3. Extending collision logic to check for other landed blocks directly below the active block. 4. Instantly updating the active block's A-Frame entity position to the calculated landing coordinate.",
+      "reasoning": "Requires controller input handling and collision detection logic (potentially raycasting or grid checking) to determine the final landing spot, which can be moderately complex depending on the existing collision system."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Block Rotation (Left Controller: Joystick, SRS)",
+      "complexityScore": 8,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'Block Rotation (Left Controller: Joystick, SRS)' into subtasks for: 1. Setting up A-Frame event listeners for `axismove` on the left VR controller. 2. Implementing logic to read and apply joystick-to-rotation axis mapping from `config.yaml`. 3. Implementing the core Super Rotation System (SRS) rotation logic for different block orientations around its pivot point. 4. Implementing SRS wall kick logic. 5. Updating the active block's A-Frame entity rotation component based on SRS rules.",
+      "reasoning": "Implementing a specific rotation system like SRS, including wall kicks and configurable controls, involves complex 3D transformation logic and state management for block orientations, making it highly complex."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Block Landing and Stacking Logic",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'Block Landing and Stacking Logic' into subtasks for: 1. Defining and initializing the 3D data structure (`boardState`) representing occupied cells in the studnia. 2. Implementing logic to detect when an active block should 'settle' (collision with floor or other settled blocks). 3. Developing the process for transitioning an active block to a 'settled' state. 4. Updating the `boardState` array accurately with the constituent parts of the settled block. 5. Ensuring settled blocks become static (visually and functionally, e.g., no longer controllable).",
+      "reasoning": "This is a core game mechanic involving management of a 3D grid state, collision detection for final placement, and state updates for every settled block, which is intricate and crucial for game progression."
+    },
+    {
+      "taskId": 9,
+      "title": "Line Clearing and Color Palette Shift",
+      "complexityScore": 8,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'Line Clearing and Color Palette Shift' into subtasks for: 1. Implementing logic to scan the `boardState` to identify completed horizontal layers. 2. Developing a mechanism to remove A-Frame entities/parts of blocks from cleared layers. 3. Implementing the `boardState` update: clearing the identified layer(s) and shifting all layers above them down. 4. Re-rendering or updating the positions of A-Frame entities for blocks that shifted down. 5. Implementing the studnia wall color palette shift logic (rotating `depthColors` from config and applying to walls).",
+      "reasoning": "Complex game logic involving 3D state array manipulation, entity removal/re-rendering, and dynamic visual updates to the environment. Potential performance considerations for shifting blocks and re-rendering."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Automatic Block Falling and Game Loop",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'Automatic Block Falling and Game Loop' into subtasks for: 1. Establishing the core game loop using A-Frame's `tick` handler or `setInterval`. 2. Implementing automatic downward movement of the active block by one unit per game loop interval. 3. Integrating collision detection (from Task 8) within the loop to check if the block has landed. 4. On landing, triggering the sequence: finalize block position, check for line clears (Task 9), and then spawn a new block (Task 4). 5. Implementing logic to read and apply the `initialFallSpeed` from `config.yaml` to control descent timing.",
+      "reasoning": "Involves creating the central game loop that orchestrates block descent, collision detection, and the sequence of post-landing actions (settling, line clearing, new block spawning), requiring careful timing and state management."
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "Scoring System Implementation",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down 'Scoring System Implementation' into subtasks for: 1. Defining scoring parameters (e.g., `basePointsPerLine`, multi-line bonus factors) in `config.yaml`. 2. Implementing the logic to calculate score for single and multiple simultaneous line clears, including the exponential bonus. 3. Developing and applying a scoring multiplier based on board size and game speed/difficulty. 4. Integrating scoring updates with the line clearing mechanism (Task 9) and storing the current score.",
+      "reasoning": "Involves mathematical calculations based on game events and configuration. While the logic itself is not overly complex, it requires careful integration with line clearing and game speed."
+    },
+    {
+      "taskId": 12,
+      "taskTitle": "HUD Implementation: Score and Next Block Preview",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'HUD Implementation' into subtasks for: 1. Setting up basic HUD structure using A-Frame text primitives or a UI library, positioned appropriately in player's view. 2. Implementing the current score display and ensuring it updates in real-time. 3. Creating the 'next block' preview area. 4. Integrating with the block generator (Task 14, or a placeholder initially) to fetch and display visual representations of upcoming blocks. 5. Making the number of previewed blocks (N) configurable via `config.yaml` (0-5).",
+      "reasoning": "Requires creating and managing dynamic UI elements in 3D space, including real-time data updates for score and block previews, and handling configuration for the preview count."
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "Game State Management (Zustand/Jotai)",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'Game State Management (Zustand/Jotai)' into subtasks for: 1. Selecting, installing, and setting up the chosen state management library (Zustand or Jotai). 2. Designing the global state structure and defining stores for different aspects (e.g., `gameStore` for score, level, boardMatrix; `playerSettingsStore`). 3. Refactoring existing score and game level management logic to use the state store. 4. Refactoring board state (`boardState` from Task 8) management to read from and write to the store. 5. Refactoring active block properties and user settings (if any exist by this point) to use the state store.",
+      "reasoning": "Integrating a global state management library involves significant refactoring of existing code and careful design of the state structure. This impacts many parts of the application and requires a systematic approach."
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "Advanced Block Features and Configuration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Decompose 'Advanced Block Features and Configuration' into subtasks for: 1. Implementing active block transparency (e.g., by adjusting material opacity). 2. Implementing logic for a landed block to change its color to match the studnia wall strip color of its landing level. 3. Implementing optional level numbering on the front of blocks (e.g., using `<a-text>`), toggleable via game options. 4. Designing the YAML structure in `config.yaml` for defining custom block shapes (e.g., coordinates, color). 5. Developing logic to parse these YAML block definitions and generate corresponding A-Frame block entities/geometries. 6. Implementing selectable block generation systems (e.g., 7-bag random generator, pure random) chosen via game options.",
+      "reasoning": "Combines multiple distinct visual and logical enhancements. Defining, parsing, and rendering configurable block shapes from YAML, along with implementing different block generation algorithms, are particularly complex parts."
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "Ghost Piece Implementation",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down 'Ghost Piece Implementation' into subtasks for: 1. Creating a visual representation for the ghost piece (e.g., highly transparent or wireframe version of the active block). 2. Implementing logic to calculate the ghost piece's final landing position by projecting it downwards until collision (similar to hard drop logic but without finalizing). 3. Ensuring the ghost piece's position and rotation are updated in real-time whenever the active block moves or rotates. 4. Adding an option in the game settings (Task 16) to toggle the visibility of the ghost piece.",
+      "reasoning": "Involves creating a predictive visual aid, requiring duplication or adaptation of collision logic from hard drop, real-time synchronization with the active game piece, and a user-configurable toggle."
+    },
+    {
+      "taskId": 16,
+      "taskTitle": "UI: Start Menu and Options Screen",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'UI: Start Menu and Options Screen' into subtasks for: 1. Selecting and setting up an A-Frame UI library (e.g., `aframe-gui`) or deciding on a custom approach. 2. Designing and implementing the Start Menu panel with options like 'Start Game', 'Options', 'Quit'. 3. Designing and implementing the Options Screen panel structure. 4. Implementing individual game setting controls on the Options Screen (e.g., difficulty, board size selection from `allowedSizes`, sound toggles, feature toggles like ghost piece). 5. Integrating these option controls with the state management system (Task 13) or `config.yaml` to read initial values and save changes.",
+      "reasoning": "Developing interactive 3D UI for menus and detailed options screens is complex, involving layout in VR, implementing various interactive widgets, and robustly linking them to the game's state or configuration."
+    },
+    {
+      "taskId": 17,
+      "taskTitle": "HUD/FUI Styling and Visual Enhancements",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down 'HUD/FUI Styling and Visual Enhancements' into subtasks for: 1. Implementing the base visual style from `hud_fui.md` (background, point grid, accent colors). 2. Applying specified typography (fonts, sizes, spacing) to all HUD and UI text elements. 3. Styling main HUD/UI widgets (3D well, progress rings, mini-map placeholder) according to `hud_fui.md`. 4. Implementing specified micro-animations (glow, scan-line, pulse, segment flash, glitch effects). 5. Styling icons and interactive controls (buttons, sliders) with hover, select, and active state feedback as per `hud_fui.md`. 6. Conducting a comprehensive visual review of all UI/HUD elements against `hud_fui.md` for accuracy and consistency.",
+      "reasoning": "Implementing a detailed visual specification with custom styling, potentially complex shaders or materials for effects like glow/noise, animations, and interactive feedback across all UI/HUD elements is a demanding and detail-oriented task."
+    },
+    {
+      "taskId": 18,
+      "taskTitle": "Sound and Haptic Feedback Integration",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'Sound and Haptic Feedback Integration' into subtasks for: 1. Setting up a sound manager module and integrating A-Frame's `<a-sound>` component or the Web Audio API. 2. Defining sound event keys in `config.yaml` and mapping them to sound file paths (starting with mock-ups). 3. Implementing haptic feedback for key game events on Quest 3 controllers using the WebXR Gamepads API (`XRInputSource.hapticActuators`). 4. Triggering appropriate sound effects and haptic feedback at various game events (block movement, rotation, landing, line clear, game over). 5. Adding on/off toggles for sound and haptics in the options menu (Task 16) and ensuring they control playback.",
+      "reasoning": "Involves integrating audio playback and haptic systems, potentially using new APIs (WebXR Gamepads for haptics), mapping them to various game events, and providing user configuration options."
+    },
+    {
+      "taskId": 19,
+      "taskTitle": "PWA Finalization and Offline Capabilities",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 'PWA Finalization and Offline Capabilities' into subtasks for: 1. Enhancing `service-worker.js` with comprehensive caching strategies (e.g., cache-first for static assets, stale-while-revalidate for others). 2. Identifying and ensuring all critical game assets (scripts, 3D models, textures, sounds, configuration files) are included in the service worker's caching list. 3. Implementing logic in the service worker to cache these assets during the `install` phase and serve them appropriately during `fetch`. 4. Updating `manifest.json` with final icons, theme colors, descriptions, and other PWA best practices. 5. Conducting thorough PWA testing: Lighthouse audit, verifying install prompts on compatible devices, and confirming full offline functionality.",
+      "reasoning": "Requires in-depth service worker development for robust offline asset caching, careful asset management, and comprehensive PWA feature testing to ensure reliability and installability."
+    },
+    {
+      "taskId": 20,
+      "taskTitle": "Difficulty Progression, Timer, and Game Over",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'Difficulty Progression, Timer, and Game Over' into subtasks for: 1. Implementing a visual countdown timer associated with active block placement. 2. Defining difficulty levels (Easy, Medium, Hard) in `config.yaml` with parameters affecting start time, timer reduction rate, and scoring. 3. Implementing logic for the timer to decrease (game speeds up) based on configurable triggers like cleared lines or score thresholds. 4. Implementing the 'Game Over' condition detection (e.g., a newly spawned block cannot be placed due to overlap at the top of the studnia). 5. Displaying a 'Game Over' message (configurable in YAML) and providing options to restart or return to the menu.",
+      "reasoning": "Involves multiple interconnected game mechanics: a timed element per block, dynamic difficulty adjustments based on player performance, and handling the critical game over state transition, requiring careful balancing and configuration."
+    },
+    {
+      "taskId": 21,
+      "taskTitle": "Multiple Game Boards Support",
+      "complexityScore": 9,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down 'Multiple Game Boards Support' into subtasks for: 1. Architecturally refactoring core game logic (board state, block spawning, falling, clearing, scoring) to be instantiable and operate independently for multiple boards. 2. Implementing logic for creating, positioning (front, left, right, back), and managing 1 to 4 independent game board instances. 3. Developing a control scheme for players to target a specific board or control all simultaneously if applicable. 4. Adapting HUD elements (Task 12) to display information for multiple boards or a summarized view. 5. Adding an option in the game settings (Task 16) for the player to select the number of active boards. 6. Thoroughly testing gameplay with 1, 2, 3, and 4 active boards, focusing on independence and usability.",
+      "reasoning": "This is a major feature requiring significant architectural refactoring to make core game systems instantiable and independent. It also introduces complex UI/UX challenges for controls and information display when managing multiple game instances simultaneously."
+    },
+    {
+      "taskId": 22,
+      "taskTitle": "Internationalization (i18n) with i18next",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 'Internationalization (i18n) with i18next' into subtasks for: 1. Installing and configuring the `i18next` library and any necessary A-Frame bindings or helpers. 2. Externalizing all user-facing strings from UI components, HUD elements, and in-game messages into resource files (e.g., `locales/en.json`, `locales/pl.json`). 3. Creating initial translation files for supported languages (e.g., English and Polish), including messages from `config.yaml` if applicable. 4. Updating all relevant UI components and game message logic to use `i18next` translation functions (`t()`). 5. Adding a language selection option to the game settings menu (Task 16) to allow users to switch languages.",
+      "reasoning": "Involves integrating a localization library, systematically externalizing all user-facing strings, managing translation files, and updating numerous UI components. While not algorithmically complex, it's a broad effort affecting many parts of the codebase."
+    },
+    {
+      "taskId": 23,
+      "taskTitle": "Data Persistence (LocalStorage / Server Prep)",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Decompose 'Data Persistence (LocalStorage / Server Prep)' into subtasks for: 1. Defining a clear data structure for storing player statistics (e.g., high scores per board size/difficulty) and preferences (e.g., last used settings). 2. Implementing functions to save this data structure to browser LocalStorage (e.g., on game over, on settings change). 3. Implementing functions to load this data from LocalStorage on game start, handling cases where no data exists. 4. Abstracting data saving/loading functions into a dedicated module to facilitate easier replacement or augmentation with a server API in the future (e.g., by creating a common interface).",
+      "reasoning": "Involves designing a data persistence strategy, implementing LocalStorage operations, and structuring the code for future scalability (server integration). Moderately complex due to data structure design and abstraction."
+    }
+  ]
+}

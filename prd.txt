@@ -1,0 +1,217 @@
+Tytuł: Profunda Immersio
+
+## 1. Wprowadzenie i Wizja Projektu
+
+Gra VR typu "falling block puzzle" (inspirowana Tetrisem) osadzona w trójwymiarowej przestrzeni, stworzona przy użyciu frameworka A-Frame, jako Progresywna Aplikacja Webowa (PWA) dla zapewnienia możliwości instalacji i działania offline. Gracz manipuluje spadającymi klockami za pomocą kontrolerów VR, starając się zapełnić poziome warstwy w "studni" gry. Celem jest osiągnięcie jak najwyższego wyniku w nieskończonej rozgrywce, która stopniowo przyspiesza. Gra kładzie nacisk na immersję, konfigurowalność oraz nowoczesny, minimalistyczny i futurystyczny interfejs użytkownika.
+
+## 2. Mechanika Rozgrywki
+
+### 2.1. Sterowanie (Kontrolery VR - Quest 3)
+*   **Prawy Kontroler:**
+    *   **Joystick (góra/dół/lewo/prawo):** Przesuwanie aktywnego klocka w płaszczyźnie XZ (poziomo) i w osi Y (pionowo, w górę).
+    *   **Przedni Przycisk (Trigger):** Natychmiastowe opuszczenie klocka na dno studni lub na najwyższy zajęty klocek.
+*   **Lewy Kontroler:**
+    *   **Joystick (góra/dół/lewo/prawo):** Rotacja aktywnego klocka wokół jego osi. Należy zdefiniować mapowanie ruchów joysticka (wartości od -1 do 1) na konkretne osie i kierunki rotacji w pliku konfiguracyjnym YAML.
+    *   Systemy rotacji: Początkowo SRS i ARS (konfigurowalne, z możliwością rozszerzenia listy w YAML i wyboru w opcjach gry).
+
+### 2.2. Plansza (Studnia Gry)
+*   **Wymiary:** Definiowalne w pliku konfiguracyjnym YAML (np. szerokość X, długość Y, głębokość Z - np. 3x3x12, 5x5x15). Użytkownik będzie mógł wybrać spośród predefiniowanych rozmiarów w opcjach gry (maksymalne rozmiary określone przez dewelopera).
+*   **Wygląd Poziomów Głębokości:**
+    *   Każdy poziom głębokości (warstwa) będzie oznaczony siatką.
+    *   Ścianki studni na każdym poziomie mogą mieć określony kolor, inny dla każdego paska/poziomu. Kolejność i definicja kolorów (max 16) w pliku YAML, aby uniknąć sąsiadowania podobnych barw.
+    *   Opcja włączenia/wyłączenia kolorów ścianek (widoczna tylko siatka vs. tekstura w kolorze poziomu).
+*   **Wiele Plansz:** Możliwość gry na 1 do 4 planszach jednocześnie (przód, lewo, prawo, tył - wybór gracza). Każda plansza działa niezależnie.
+
+### 2.3. Klocki
+*   **Wygląd:** Początkowo płaskie (2D rzutowane na 3D sześciany), np. w kształcie litery L. Docelowo różne kształty definiowalne w pliku YAML (symboliczny zapis kształtów do opracowania).
+*   **Generowanie Klocków:**
+    *   System generowania do wyboru w opcjach (np. klasyczne 7 klocków, losowe).
+    *   Podgląd następnych N klocków (0-5, konfigurowalne) wyświetlany obok planszy.
+*   **Zachowanie Klocków:**
+    *   Aktywny klocek jest półprzezroczysty, aby widoczna była struktura pod nim.
+    *   Po opadnięciu klocek przyjmuje kolor paska poziomu, na którym wylądował.
+    *   Opcjonalna numeracja poziomu głębokości wyświetlana na froncie klocka (do włączenia w konfiguracji).
+*   **Opadanie Klocków:**
+    *   Opcja włączenia/wyłączenia animacji opadania (natychmiastowa teleportacja vs. płynne opadanie).
+    *   Prędkość opadania definiowalna.
+    *   Przytrzymanie spustu prawego kontrolera przyspiesza opadanie (akceleracja konfigurowalna).
+*   **Ghost Piece:** Opcjonalny "duch" klocka pokazujący miejsce jego lądowania (do włączenia w konfiguracji).
+
+### 2.4. Czyszczenie Poziomów
+*   Zapełnienie całego poziomu (warstwy) klockami powoduje jego zniknięcie.
+*   Klocki znajdujące się powyżej opadają o jeden poziom w dół.
+*   **Ważne:** Opadające klocki NIE zmieniają swojego koloru. Zamiast tego, "paleta" kolorów na ściankach studni przesuwa się w dół (rotacja kolorów). Np. jeśli poziom 3 był niebieski i został wyczyszczony, to poziom 2 (który był np. zielony) staje się teraz "nowym" poziomem 2 i przyjmuje kolor niebieski (kolor znikniętego poziomu 3 "przesuwa się" na górę kolejki kolorów zdefiniowanej w YAML).
+
+### 2.5. Punktacja
+*   Za wyczyszczenie jednego poziomu: bazowa wartość punktów (konfigurowalna, zależna od rozmiaru planszy).
+*   Za jednoczesne wyczyszczenie wielu poziomów: punkty bazowe podniesione do potęgi liczby wyczyszczonych poziomów (np. 2 poziomy = PUNKTY^2, 3 poziomy = PUNKTY^3).
+*   Punktacja rośnie proporcjonalnie do skracającego się czasu na ułożenie klocka (wraz z postępem gry).
+
+### 2.6. Poziomy Trudności i Postęp Gry
+*   **Nieskończona Rozgrywka.**
+*   **Czas na Ułożenie Klocka:**
+    *   Początkowo np. 10 sekund (konfigurowalne).
+    *   Czas skraca się o zdefiniowaną wartość (np. 1 sekundę) co określoną liczbę wyczyszczonych poziomów lub "rozgrywek" (np. co 10). Gracz otrzymuje powiadomienie o zmianie.
+*   **Poziomy Zaawansowania (Easy, Medium, Hard):**
+    *   Definiują startowy czas na ułożenie klocka (np. Easy: 10s, Medium: 8s, Hard: 6s).
+    *   Wpływają na szybkość naliczania punktów (szybsze poziomy = więcej punktów).
+*   **Brak Zwycięzcy:** Liczy się tylko łączna punktacja.
+
+## 3. Interfejs Użytkownika (HUD/FUI) i Wrażenia
+
+### 3.1. Ogólny Styl
+*   Nowoczesny, minimalistyczny, oszczędny, futurystyczny, sci-fi.
+*   **Biblioteki UI dla A-Frame:** Rozważyć `aframe-gui`, `aframe-ui-widgets`, `aframe-layout-component`.
+
+### 3.2. Ekran Startowy / Menu Opcji
+*   Wybór poziomu trudności.
+*   Ustawienia opcji gry (patrz sekcja 4).
+*   Włączanie/wyłączanie dźwięku.
+*   Wybór rozmiaru planszy (spośród dozwolonych przez dewelopera).
+*   Wybór trybu zapisu statystyk (lokalnie vs. serwer).
+*   Wybór języka interfejsu.
+*   Wybór palety kolorystycznej.
+*   Opcja "sticky UI" (czy interfejs obraca się z graczem, czy jest statyczny).
+
+### 3.3. Elementy HUD w Grze
+*   **Lokalizacja:** Do ustalenia podczas implementacji dla najlepszej czytelności (np. nad planszą, po bokach).
+*   **Odliczanie Czasu:** Wyraźnie widoczny zegar/pasek postępu.
+*   **Punktacja:** Bieżący wynik.
+*   **Podgląd Następnych Klocków.**
+*   **Komunikaty:**
+    *   Definiowane w pliku konfiguracyjnym YAML, z możliwością podstawiania zmiennych.
+    *   Np. "Game Over", "You Lost", "New Level", "Time Reduced: 8s!".
+*   **Wskaźniki Poziomów:** Kolorowe pasy na ściankach studni lub siatka.
+*   **Oświetlenie Siatki:** Opcjonalne.
+*   **Cień Klocka:** Opcjonalny cień rzucany przez opadający klocek na przeciwległą ścianę.
+
+### 3.4. Specyfikacja Wizualna HUD/FUI (na podstawie `hud_fui.md`)
+*   **Atmosfera i Paleta Kolorów:**
+    *   Tło: Czarne (#000000) z subtelną teksturą szumu (≈2% opacity).
+    *   Siatka Punktowa: Małe kropki/linie co 16–32px (opacity 10–15%).
+    *   Kolory Akcentujące:
+        *   Biały (#FFFFFF): Główne linie i tekst.
+        *   Neonowy Czerwony (#E10600): Podświetlenia, stany aktywne, z efektem glow (8–12px blur, 20–30% opacity).
+        *   Neutralny Szary (#4A4A4A – #666666): Panele, tekst drugorzędny.
+*   **Typografia:**
+    *   Font: Geometryczny monospace (styl OCR-A lub Eurostile).
+    *   Rozmiary: Tytuły HUD (18–24px, uppercase, letter-spacing +100), Etykiety (12–14px, uppercase, letter-spacing +80), Wyświetlacze numeryczne (32–48px, centered).
+    *   Kolory Tekstu: Biały (aktywny), szary (drugorzędny), czerwony (alerty).
+*   **Layout i Siatka:**
+    *   Strefy: Lewy panel, centralna arena 3D, prawy panel, dolny pasek statusu.
+    *   Separatory: 1px #FFFFFF (40% opacity).
+    *   Wewnętrzna siatka paneli: Subdywizje 8×8 lub 16×16px (linie 0.5px, 10% opacity).
+*   **Widgety Główne:**
+    *   Studnia 3D: Perspektywiczna siatka z warstwami Z oznaczonymi kolorowymi pasami/wireframe.
+    *   Pierścienie Postępu (timer/combo): Segmentowane okręgi, białe (nieaktywne) i czerwone (aktywne), z glow.
+    *   Mini-Mapa/Globus: Sferyczna siatka lub płaska mapa, czerwony pulsujący punkt dla fokusu.
+    *   Histogramy: Pionowe paski, białe i czerwone akcenty.
+    *   Tekst Dot-Matrix: Informacje drugorzędne małym monospace, subtelny jitter.
+*   **Animacje i Mikrointerakcje:**
+    *   Glow/Bloom: Neonowy czerwony (8–12px blur).
+    *   Scan-Line Sweep: Gradient alfa co 2–3s.
+    *   Pulse: Czerwony punkt (opacity 60→100% co 0.8s).
+    *   Segment Flash: Biały błysk na segmencie pierścienia (0.1s).
+    *   Glitch: Okazjonalne przesunięcie horyzontalne.
+*   **Ikony i Kontrolki:**
+    *   Kształty: Czyste okręgi, prostokąty, linie (stroke 1–2px).
+    *   Interakcja: Hover/select → neonowy czerwony glow + skalowanie 1.05×.
+    *   Celownik VR: Cienki krzyżyk z centralnym czerwonym punktem.
+*   **Warianty Tematyczne (przyszłość):** Neon Tech, Cyber Mint, Solar Graph, Acid Mono.
+
+### 3.5. Efekty Wizualne i Dźwiękowe
+*   **Efekty Wizualne:**
+    *   Glow lub podobny efekt przy czyszczeniu poziomu.
+    *   Rozważyć `aframe-particle-system-component` dla cząsteczek (dym, iskry).
+    *   Rozważyć `aframe-outline` dla podświetlania elementów.
+*   **Dźwięk:**
+    *   Mock-upy dźwięków na początku (puste pliki lub wpisy "mock-up" w konfiguracji).
+    *   Docelowo ścieżki do plików dźwiękowych w konfiguracji YAML.
+*   **Haptyka:** Wibracje kontrolerów (Quest 3 API) przy opadaniu, rotacji, czyszczeniu poziomu (on/off w opcjach).
+
+## 4. Opcje Konfiguracyjne
+
+### 4.1. Plik Konfiguracyjny YAML (dla dewelopera)
+*   Definicja rozmiarów planszy (X, Y, Z) i dozwolonych wariantów dla gracza.
+*   Kolejność i definicje kolorów dla poziomów głębokości (max 16).
+*   Bazowa wartość punktów za wyczyszczenie poziomu.
+*   Definicje kształtów klocków i ich symboliczny zapis.
+*   Początkowy czas na ułożenie klocka dla różnych poziomów trudności.
+*   Wartość skracania czasu na ułożenie klocka i częstotliwość tej zmiany.
+*   Prędkość opadania klocka i wartość akceleracji.
+*   Lista dozwolonych systemów rotacji (np. SRS, ARS).
+*   Ścieżki do plików dźwiękowych (lub "mock-up").
+*   Definicje wszystkich komunikatów w grze (z placeholderami na zmienne).
+*   Maksymalne rozmiary planszy do wyboru przez użytkownika.
+*   Konfiguracja logowania danych (local storage / URL serwera).
+*   Lista dostępnych języków interfejsu.
+*   Konfiguracja "watch" dla plików YAML/JSON (automatyczny reload bez restartu gry).
+*   Definicje palet kolorystycznych.
+
+### 4.2. Opcje w Grze (dla użytkownika)
+*   Włączanie/wyłączanie kolorów ścianek studni.
+*   Włączanie/wyłączanie numeracji poziomu na klockach.
+*   Włączanie/wyłączanie animacji opadania klocka (teleportacja).
+*   Wybór systemu generowania klocków (klasyczny/losowy).
+*   Liczba widocznych następnych klocków (0-5).
+*   Włączanie/wyłączanie "ghost piece".
+*   Wybór systemu rotacji (z listy zdefiniowanej w YAML).
+*   Wybór rozmiaru planszy (z listy dozwolonej przez dewelopera).
+*   Włączanie/wyłączanie oświetlenia siatki.
+*   Włączanie/wyłączanie cienia klocka.
+*   Włączanie/wyłączanie haptyki.
+*   Wybór trybu zapisu statystyk (lokalnie / serwer - jeśli serwer skonfigurowany).
+*   Wybór języka interfejsu (z listy dostępnej w YAML).
+*   Wybór palety kolorystycznej (z listy dostępnej w YAML).
+*   Włączanie/wyłączanie "sticky UI".
+*   Smooth rotation / Snap Rotation.
+
+## 5. Wymagania Techniczne
+*   **Framework:** A-Frame.
+*   **Języki:** JavaScript/TypeScript.
+*   **Narzędzie Budowania:** Vite.js (dla szybkiego developmentu i optymalizacji produkcyjnej).
+*   **Typ Aplikacji:** Progresywna Aplikacja Webowa (PWA) - manifest, service worker.
+*   **Platforma:** WebXR (Quest 3).
+*   **Parsowanie Konfiguracji:** `js-yaml` do obsługi plików konfiguracyjnych YAML.
+*   **Zarządzanie Stanem:** Rozważyć `Zustand` lub `Jotai` dla bardziej złożonych stanów aplikacji.
+*   **Internacjonalizacja (i18n):** `i18next` do obsługi wielu języków.
+*   **Polyfill/Bridge:** Zastosować, aby ułatwić ewentualne portowanie (np. UXXR przez A-Frame).
+*   **Warstwa UI:** HTML-overlay (np. `aframe-html-shader`).
+*   **Modularność:** Konfiguracja kolorów/styli w centralnym pliku CSS/SASS lub YAML/JSON (theme provider).
+*   **Efekty Świetlne:** Kolorowane światła punktowe (`<a-light>`).
+*   **Tryb Debug:** Wyświetlanie FPS, zajętości pamięci (WebXR stats), profilowanie Three.js (LOD, mesh instancing). Cel: >=72 FPS na Quest 3.
+*   **Zapis Danych i Analityka:**
+*   Logowanie statystyk (obroty, czas na decyzję itp.).
+*   Początkowo LocalStorage, z przygotowaniem pod integrację z serwerem (leaderboardy).
+
+## 6. Plan Testów i Kamienie Milowe (orientacyjne, na wzór `Milestones.md`)
+
+Każdy kamień milowy powinien kończyć się w pełni funkcjonalnym, testowalnym wizualnie segmentem VR. Testowanie jednostkowe nie jest priorytetem; nacisk na testy manualne w środowisku VR po każdym etapie.
+
+*   **M1. Szkielet Projektu i Konfiguracja:** Inicjalizacja A-Frame, struktura katalogów, definicja schematu YAML. *Test VR: Pusta studnia, wskaźnik ładowania konfiguracji.*
+*   **M2. Generowanie Planszy:** Parsowanie YAML, dynamiczne generowanie siatki 3D, renderowanie warstw głębokości. *Test VR: Widoczna siatka i warstwy kolorów wg konfiguracji.*
+*   **M3. Podstawowe Sterowanie Klockiem:** Ruch (prawo/lewo/góra/dół), upuszczanie placeholderem. *Test VR: Możliwość poruszania i "upuszczania" kostki-placeholdera.*
+*   **M4. Typy Klocków i Ich Pojawianie Się:** Definicja kształtów w YAML, generator klocków, rysowanie półprzezroczystych kształtów. *Test VR: Losowe klocki pojawiają się nad studnią.*
+*   **M5. Rotacja Klocków:** Sterowanie rotacją lewym kontrolerem, opcje smooth/snap, systemy SRS/ARS. *Test VR: Możliwość rotacji klocków wokół osi X/Y/Z.*
+*   **M6. Opadanie Klocków (Przyspieszone/Teleport):** Przyspieszone opadanie, opcja teleportacji. *Test VR: Testowanie przyspieszonego opadania vs. natychmiastowego.*
+*   **M7. Ghost Piece i Podgląd Następnych:** Opcjonalny "duch", podgląd N następnych klocków. *Test VR: Włączanie/wyłączanie "ducha" i kolejki klocków.*
+*   **M8. Kolorowanie i Numeracja Poziomów:** Kolorowanie klocków wg głębokości, numeracja poziomu na klocku. *Test VR: Klocki przyjmują właściwy kolor i pokazują numer warstwy.*
+*   **M9. Czyszczenie Warstw i Przesuwanie:** Detekcja pełnej warstwy, usuwanie, przesuwanie klocków w dół, rotacja kolorów studni. *Test VR: Zapełnienie warstwy → znika, reszta opada.*
+*   **M10. Punktacja i Skalowanie Trudności:** System punktacji, timer, skracanie czasu, powiadomienia. *Test VR: Wynik rośnie, timer się skraca, pojawia się powiadomienie o zmianie.*
+*   **M11. Menu Opcji VR:** Panel UI w VR do dynamicznej zmiany ustawień. *Test VR: Dynamiczna zmiana ustawień i natychmiastowy efekt w grze.*
+*   **M12. Haptyka, Dźwięk, Efekty:** Wibracje, mock-upy audio, efekty wizualne przy czyszczeniu. *Test VR: Odczuwalna haptyka, odtwarzanie mock-upów audio, efekty wizualne.*
+*   **M13. Debug i Optymalizacja:** Nakładka debugowa (FPS, pamięć), profilowanie. *Test VR: Weryfikacja metryk wydajności.*
+*   **M14. Zapis Postępów i Leaderboardy:** LocalStorage vs. mock API serwera, wybór trybu. *Test VR: Zapis i odczyt wyników lokalnie lub przez mock serwera.*
+*   **M15. Testy Końcowe i Wydanie:** Playtesty VR, poprawki błędów, dokumentacja schematu YAML, budowanie paczki WebXR. *Test VR: Wszystkie funkcje zweryfikowane, gotowe do wydania.*
+
+## 7. Przyszłe Rozszerzenia (Poza Początkowym Zakresem)
+*   Specjalne tryby gry / wyzwania.
+*   Tutorial / onboarding.
+*   Bardziej zaawansowane animacje i efekty.
+
+## 8. Dodatkowe Wskazówki Integracyjne
+*   Warstwa UI jako HTML-overlay: użyć `aframe-html-shader` (lub `<a-plane shader="html">` z `aframe-html-shader-component`) do wtopienia paneli HTML/CSS nad sceną VR.
+*   Modularność: trzymaj konfigurację kolorów i stylów w centralnym pliku CSS/SASS lub w YAML/JSON (theme provider), żeby szybko przełączać między paletami.
+*   Efekty świetlne: dobierz kolorowane światła punktowe (`<a-light>`), które podkreślą neonowe akcenty UI.
+*   Biblioteki UI dedykowane A-Frame: `aframe-gui`, `aframe-ui-widgets`, `aframe-layout-component`.
+*   Efekty cząsteczkowe i glow: `aframe-particle-system-component`, `aframe-outline`.
