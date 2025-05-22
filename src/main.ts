@@ -3,6 +3,8 @@ import { loadConfig } from './configLoader';
 import './components/gameBoard';
 import './components/gameBlock';
 import './components/blockMovement';
+import './components/blockHardDrop';
+import { initBoardState } from './boardState';
 
 function spawnNewBlock(
   scene: Element,
@@ -14,6 +16,11 @@ function spawnNewBlock(
   block.setAttribute('game-block', { color });
   block.setAttribute('position', `0 ${startY} 0`);
   block.setAttribute('block-movement', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height
+  });
+  block.setAttribute('block-hard-drop', {
     boardWidth: boardDims.width,
     boardDepth: boardDims.depth,
     boardHeight: boardDims.height
@@ -39,17 +46,20 @@ async function init() {
     board.setAttribute('position', '0 0 -5');
     scene.appendChild(board);
 
+    const dims = {
+      width: boardSize.dimensions[0],
+      depth: boardSize.dimensions[1],
+      height: boardSize.dimensions[2]
+    };
+
+    initBoardState(dims.width, dims.depth, dims.height);
+
+    scene.addEventListener('block-settled', () => {
+      spawnNewBlock(board, '#fff', dims.height, dims);
+    });
+
     // Spawn the first block at the top of the board
-    spawnNewBlock(
-      board,
-      '#fff',
-      boardSize.dimensions[2],
-      {
-        width: boardSize.dimensions[0],
-        depth: boardSize.dimensions[1],
-        height: boardSize.dimensions[2]
-      }
-    );
+    spawnNewBlock(board, '#fff', dims.height, dims);
   } catch (err) {
     console.error(err);
   }
