@@ -2,11 +2,22 @@ import 'aframe';
 import { loadConfig } from './configLoader';
 import './components/gameBoard';
 import './components/gameBlock';
+import './components/blockMovement';
 
-function spawnNewBlock(scene: Element, color: string, startY: number) {
+function spawnNewBlock(
+  scene: Element,
+  color: string,
+  startY: number,
+  boardDims: { width: number; depth: number; height: number }
+) {
   const block = document.createElement('a-entity');
   block.setAttribute('game-block', { color });
   block.setAttribute('position', `0 ${startY} 0`);
+  block.setAttribute('block-movement', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height
+  });
   scene.appendChild(block);
   return block;
 }
@@ -32,7 +43,12 @@ async function init() {
     spawnNewBlock(
       board,
       '#fff',
-      boardSize.dimensions[2]
+      boardSize.dimensions[2],
+      {
+        width: boardSize.dimensions[0],
+        depth: boardSize.dimensions[1],
+        height: boardSize.dimensions[2]
+      }
     );
   } catch (err) {
     console.error(err);
