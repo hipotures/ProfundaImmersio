@@ -4,7 +4,8 @@ import './components/gameBoard';
 import './components/gameBlock';
 import './components/blockMovement';
 import './components/blockHardDrop';
-import { initBoardState } from './boardState';
+import './components/blockAutoFall';
+import { initBoardState, clearFullLayers } from './boardState';
 
 function spawnNewBlock(
   scene: Element,
@@ -25,6 +26,12 @@ function spawnNewBlock(
     boardDepth: boardDims.depth,
     boardHeight: boardDims.height
   });
+  block.setAttribute('block-auto-fall', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height,
+    floorY: 0.5
+  });
   scene.appendChild(block);
   return block;
 }
@@ -36,6 +43,16 @@ async function init() {
     const boardSize = config.boardSizes[0];
     const scene = document.querySelector('a-scene');
     if (!scene) return;
+
+    let score = 0;
+    const hud = document.createElement('a-entity');
+    hud.setAttribute('position', '0 2 -4');
+    const scoreText = document.createElement('a-text');
+    scoreText.setAttribute('value', 'Score: 0');
+    scoreText.setAttribute('color', '#fff');
+    hud.appendChild(scoreText);
+    scene.appendChild(hud);
+
     const board = document.createElement('a-entity');
     board.setAttribute('game-board', {
       width: boardSize.dimensions[0],
@@ -55,6 +72,12 @@ async function init() {
     initBoardState(dims.width, dims.depth, dims.height);
 
     scene.addEventListener('block-settled', () => {
+      const cleared = clearFullLayers();
+      if (cleared > 0) {
+        score += config.scoring.lineClearBase * Math.pow(2, cleared - 1);
+        scoreText.setAttribute('value', `Score: ${score}`);
+        board.emit('shift-colors', { count: cleared });
+      }
       spawnNewBlock(board, '#fff', dims.height, dims);
     });
 

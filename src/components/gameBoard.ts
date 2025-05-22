@@ -11,6 +11,7 @@ declare const AFrame: typeof AFRAME;
 
 export interface GameBoardComponent extends AFrame.Component {
   data: GameBoardData;
+  walls: HTMLElement[];
 }
 
 AFRAME.registerComponent('game-board', {
@@ -22,6 +23,7 @@ AFRAME.registerComponent('game-board', {
   },
   init(this: GameBoardComponent) {
     const { width, depth, height, colors } = this.data;
+    this.walls = [];
 
     const floor = document.createElement('a-box');
     floor.setAttribute('width', width);
@@ -40,7 +42,21 @@ AFRAME.registerComponent('game-board', {
       wall.setAttribute('color', color);
       wall.setAttribute('position', `0 ${y + 0.05} 0`);
       wall.setAttribute('opacity', 0.2);
+      wall.classList.add('depth-wall');
       this.el.appendChild(wall);
+      this.walls.push(wall);
     }
+
+    this.el.addEventListener('shift-colors', (e: CustomEvent) => {
+      const count: number = e.detail.count || 1;
+      for (let i = 0; i < count; i++) {
+        const first = this.data.colors.shift();
+        if (first) this.data.colors.push(first);
+      }
+      for (let y = 0; y < this.walls.length; y++) {
+        const c = this.data.colors[y % this.data.colors.length];
+        this.walls[y].setAttribute('color', c);
+      }
+    });
   }
 });
