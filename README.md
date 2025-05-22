@@ -14,6 +14,7 @@ git clone <this repo>
 cd ProfundaImmersio
 
 # Install dependencies
+# The repository includes a package.json with A-Frame, js-yaml, Vite and TypeScript
 npm install
 
 # Start development server

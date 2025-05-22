@@ -1,6 +1,18 @@
 {
   "name": "profunda-immersio",
   "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "echo 'No tests yet'"
+  },
+  "dependencies": {
+    "aframe": "^1.5.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
   "description": "VR falling-block puzzle game for WebXR using A-Frame and TypeScript",
   "private": true,
   "scripts": {
