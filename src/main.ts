@@ -1,6 +1,15 @@
 import 'aframe';
 import { loadConfig } from './configLoader';
 import './components/gameBoard';
+import './components/gameBlock';
+
+function spawnNewBlock(scene: Element, color: string, startY: number) {
+  const block = document.createElement('a-entity');
+  block.setAttribute('game-block', { color });
+  block.setAttribute('position', `0 ${startY} 0`);
+  scene.appendChild(block);
+  return block;
+}
 
 async function init() {
   console.log('Profunda Immersio starting...');
@@ -18,7 +27,16 @@ async function init() {
     });
     board.setAttribute('position', '0 0 -5');
     scene.appendChild(board);
+
+    // Spawn the first block at the top of the board
+    spawnNewBlock(
+      board,
+      '#fff',
+      boardSize.dimensions[2]
+    );
   } catch (err) {
     console.error(err);
   }
 }
+
+init();
