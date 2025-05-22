@@ -1,0 +1,15 @@
+# Node.js dependencies for Profunda Immersio
+# These packages are required to build and run the game using Vite and A-Frame.
+aframe
+vite
+typescript
+js-yaml
+zustand
+i18next
+aframe-html-shader
+aframe-gui
+aframe-ui-widgets
+aframe-layout-component
+aframe-particle-system-component
+aframe-outline
+@vitejs/plugin-pwa

@@ -22,5 +22,3 @@ async function init() {
     console.error(err);
   }
 }
-
-window.addEventListener('DOMContentLoaded', init);
