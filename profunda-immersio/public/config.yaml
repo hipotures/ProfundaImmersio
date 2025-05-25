@@ -1,0 +1,30 @@
+boardDimensions:
+  x: 3
+  y: 3
+  z: 12
+allowedSizes:
+  - name: "Small"
+    x: 3
+    y: 3
+    z: 12
+  - name: "Medium"
+    x: 4
+    y: 4
+    z: 16
+  - name: "Large"
+    x: 5
+    y: 5
+    z: 20
+depthColors:
+  - '#FF0000'
+  - '#00FF00'
+  - '#0000FF'
+  - '#FFFF00'
+  - '#FF00FF'
+  - '#00FFFF'
+initialFallSpeed: 1000
+blockGenerationSystem: "classic"
+nextBlocksPreviewCount: 3
+gameMessages:
+  gameOver: "Game Over"
+  newLevel: "New Level!"
