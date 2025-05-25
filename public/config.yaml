@@ -1,0 +1,102 @@
+boardDimensions:
+  x: 10 # Width of the playfield
+  y: 1  # Depth/Length of the playfield (into the scene) - For 2D feel on XY plane (A-Frame Y is height)
+  z: 20 # Height of the playfield (the well/studnia - A-Frame Y axis)
+allowedSizes: # Not directly used by game logic currently
+  - name: "Standard"
+    x: 10
+    y: 1
+    z: 20
+depthColors: # Colors for settled blocks based on landed Y-level (or wall segments)
+  - '#FF0000' # Red - Bottom
+  - '#FF4500' # OrangeRed
+  - '#FFA500' # Orange
+  - '#FFD700' # Gold
+  - '#FFFF00' # Yellow
+  - '#ADFF2F' # GreenYellow
+  - '#00FF00' # Lime
+  - '#00FA9A' # MediumSpringGreen
+  - '#00FFFF' # Aqua
+  - '#00BFFF' # DeepSkyBlue
+  - '#0000FF' # Blue
+  - '#8A2BE2' # BlueViolet - Top
+  # Repeat or extend if boardDimensions.z > 12
+  - '#FF0000' 
+  - '#FF4500' 
+  - '#FFA500' 
+  - '#FFD700' 
+  - '#FFFF00' 
+  - '#ADFF2F' 
+  - '#00FF00' 
+  - '#00FA9A'
+initialFallSpeed: 1000 # Milliseconds for one step down
+blockGenerationSystem: "7-bag" # Options: "random", "7-bag"
+nextBlocksPreviewCount: 3
+
+# Scoring
+basePointsPerLine: 100
+scoreMultiplierEasy: 1.0 # Currently used multiplier
+scoreMultiplierMedium: 1.5
+scoreMultiplierHard: 2.0
+
+# Optional Features
+showLevelNumbersOnBlocks: false # Set to true to display level number on settled blocks
+ghostPieceEnabled: true 
+
+gameMessages:
+  gameOver: "Game Over"
+  newLevel: "New Level!" # Placeholder
+
+# Block Shapes Definitions
+# Pivot point for rotation is (0,0,0) in the shape's local coordinates.
+# Units have z:0 as the game is effectively 2D on the XY plane (A-Frame Y is height of well).
+blockShapes:
+  O:
+    color: "#FFFF00" # Yellow
+    units: # Pivot at bottom-left for this 2x2
+      - { x: 0, y: 0, z: 0 }
+      - { x: 1, y: 0, z: 0 }
+      - { x: 0, y: 1, z: 0 }
+      - { x: 1, y: 1, z: 0 }
+  I: 
+    color: "#00FFFF" # Cyan
+    units: # Pivot is the second unit from left for standard I-piece rotation
+      - { x: -1, y: 0, z: 0 }
+      - { x: 0, y: 0, z: 0 }  # Pivot
+      - { x: 1, y: 0, z: 0 }
+      - { x: 2, y: 0, z: 0 }
+  L:
+    color: "#FFA500" # Orange
+    units: # Pivot is the "corner" unit
+      - { x: -1, y: 1, z: 0 } # Top of L
+      - { x: -1, y: 0, z: 0 } # Pivot (corner)
+      - { x: 0, y: 0, z: 0 }
+      - { x: 1, y: 0, z: 0 }  # Base of L
+  J:
+    color: "#0000FF" # Blue
+    units: # Pivot is the "corner" unit
+      - { x: 1, y: 1, z: 0 }  # Top of J
+      - { x: 1, y: 0, z: 0 }  # Pivot (corner)
+      - { x: 0, y: 0, z: 0 }
+      - { x: -1, y: 0, z: 0 } # Base of J
+  T:
+    color: "#800080" # Purple
+    units: # Pivot is the center of the T-bar's horizontal part
+      - { x: -1, y: 0, z: 0 }
+      - { x: 0, y: 0, z: 0 }  # Pivot
+      - { x: 1, y: 0, z: 0 }
+      - { x: 0, y: 1, z: 0 }  # Stem of T (points "up" relative to pivot)
+  S:
+    color: "#00FF00" # Green
+    units: # Pivot is one of the two "bottom" units for standard S/Z orientation
+      - { x: 0, y: 0, z: 0 }  # Pivot
+      - { x: 1, y: 0, z: 0 }
+      - { x: -1, y: 1, z: 0 }
+      - { x: 0, y: 1, z: 0 }
+  Z:
+    color: "#FF0000" # Red
+    units: # Pivot is one of the two "bottom" units for standard S/Z orientation
+      - { x: -1, y: 0, z: 0 }
+      - { x: 0, y: 0, z: 0 }  # Pivot
+      - { x: 0, y: 1, z: 0 }
+      - { x: 1, y: 1, z: 0 }
