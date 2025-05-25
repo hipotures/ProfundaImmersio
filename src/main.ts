@@ -1,75 +1,91 @@
-import './style.css';
-import 'aframe'; // Import A-Frame
-import { loadConfig, Config, BoardDimensions } from './config'; // Assuming Config interface is exported
-import './components/game-board'; // Import to register game-board
-import './components/game-block'; // Import to register game-block
-import './components/hud-manager'; // Import to register hud-manager
-import { initGameLogic } from './game-logic'; // Import game logic functions
+import 'aframe';
+import { loadConfig } from './configLoader';
+import './components/gameBoard';
+import './components/gameBlock';
+import './components/blockMovement';
+import './components/blockHardDrop';
+import './components/blockAutoFall';
+import { initBoardState, clearFullLayers } from './boardState';
 
-async function main() {
+function spawnNewBlock(
+  scene: Element,
+  color: string,
+  startY: number,
+  boardDims: { width: number; depth: number; height: number }
+) {
+  const block = document.createElement('a-entity');
+  block.setAttribute('game-block', { color });
+  block.setAttribute('position', `0 ${startY} 0`);
+  block.setAttribute('block-movement', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height
+  });
+  block.setAttribute('block-hard-drop', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height
+  });
+  block.setAttribute('block-auto-fall', {
+    boardWidth: boardDims.width,
+    boardDepth: boardDims.depth,
+    boardHeight: boardDims.height,
+    floorY: 0.5
+  });
+  scene.appendChild(block);
+  return block;
+}
+
+async function init() {
+  console.log('Profunda Immersio starting...');
   try {
-    const config: Config = await loadConfig();
-    console.log('Configuration loaded:', config);
+    const config = await loadConfig('/config/config.yaml');
+    const boardSize = config.boardSizes[0];
+    const scene = document.querySelector('a-scene');
+    if (!scene) return;
 
-    if (!config || !config.boardDimensions) {
-      console.error("Critical configuration (boardDimensions) missing. Aborting.");
-      document.body.innerHTML = "<p>Error: Critical configuration missing. See console.</p>";
-      return;
-    }
-    const boardDimensions = config.boardDimensions;
+    let score = 0;
+    const hud = document.createElement('a-entity');
+    hud.setAttribute('position', '0 2 -4');
+    const scoreText = document.createElement('a-text');
+    scoreText.setAttribute('value', 'Score: 0');
+    scoreText.setAttribute('color', '#fff');
+    hud.appendChild(scoreText);
+    scene.appendChild(hud);
 
-    const appDiv = document.querySelector<HTMLDivElement>('#app');
-    if (!appDiv) {
-      console.error("Could not find #app element to initialize A-Frame scene.");
-      return;
-    }
+    const board = document.createElement('a-entity');
+    board.setAttribute('game-board', {
+      width: boardSize.dimensions[0],
+      depth: boardSize.dimensions[1],
+      height: boardSize.dimensions[2],
+      colors: config.depthColors
+    });
+    board.setAttribute('position', '0 0 -5');
+    scene.appendChild(board);
 
-    // Scene setup with HUD integrated into the camera
-    appDiv.innerHTML = `
-      <a-scene background="color: #222" renderer="colorManagement: true">
-        <!-- Game Board Entity -->
-        <a-entity id="game-board-entity" game-board position="0 0 -${boardDimensions.y * 1.5}"></a-entity> 
-        
-        <!-- Camera Rig with HUD -->
-        <a-entity id="camera-rig" position="0 1.6 ${boardDimensions.y / 2}">
-          <a-entity id="camera" camera look-controls>
-            <!-- HUD attached to the camera -->
-            <a-entity id="hud" hud-manager position="0 0 -0.5"></a-entity> 
-            <!-- Adjust HUD position: 0 0 -0.5 makes it slightly in front of camera -->
-            <!-- The hud-manager component itself will place score/next elements relative to this #hud entity -->
-          </a-entity>
-        </a-entity>
+    const dims = {
+      width: boardSize.dimensions[0],
+      depth: boardSize.dimensions[1],
+      height: boardSize.dimensions[2]
+    };
 
-        <!-- VR Controllers -->
-        <a-entity id="left-controller" oculus-touch-controls="hand: left"></a-entity>
-        <a-entity id="right-controller" oculus-touch-controls="hand: right"></a-entity>
+    initBoardState(dims.width, dims.depth, dims.height);
 
-        <!-- Lighting -->
-        <a-entity light="type: ambient; color: #BBB; intensity: 0.8"></a-entity>
-        <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
-        <a-sky color="#ECECEC"></a-sky>
-      </a-scene>
-    `;
-
-    const sceneEl = document.querySelector('a-scene');
-    if (!sceneEl) {
-      console.error("A-Frame scene element not found after setting innerHTML.");
-      return;
-    }
-
-    sceneEl.addEventListener('loaded', () => {
-      console.log("A-Frame scene loaded.");
-      initGameLogic(sceneEl as AFRAME.Scene, config, boardDimensions as BoardDimensions);
-      console.log("Game logic initialized.");
+    scene.addEventListener('block-settled', () => {
+      const cleared = clearFullLayers();
+      if (cleared > 0) {
+        score += config.scoring.lineClearBase * Math.pow(2, cleared - 1);
+        scoreText.setAttribute('value', `Score: ${score}`);
+        board.emit('shift-colors', { count: cleared });
+      }
+      spawnNewBlock(board, '#fff', dims.height, dims);
     });
 
-  } catch (error) {
-    console.error('Failed to initialize application:', error);
-    const appDiv = document.querySelector<HTMLDivElement>('#app');
-    if (appDiv) {
-      appDiv.innerHTML = `<p>Error loading application. See console for details: ${error}</p>`;
-    }
+    // Spawn the first block at the top of the board
+    spawnNewBlock(board, '#fff', dims.height, dims);
+  } catch (err) {
+    console.error(err);
   }
 }
 
-main();
+init();
