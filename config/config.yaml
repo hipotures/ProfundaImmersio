@@ -20,6 +20,26 @@ blocks:
       pattern: |
         X..
         XXX
+    - name: J
+      pattern: |
+        ..X
+        XXX
+    - name: O
+      pattern: |
+        XX
+        XX
+    - name: S
+      pattern: |
+        .XX
+        XX.
+    - name: T
+      pattern: |
+        .X.
+        XXX
+    - name: Z
+      pattern: |
+        XX.
+        .XX
 scoring:
   lineClearBase: 100
   accelerationFactor: 0.1

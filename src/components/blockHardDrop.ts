@@ -27,18 +27,21 @@ AFRAME.registerComponent('block-hard-drop', {
     this.onKeyDown = this.handleKeyDown.bind(this);
     this.onTriggerDown = this.handleTriggerDown.bind(this);
     window.addEventListener('keydown', this.onKeyDown);
-    this.el.sceneEl?.addEventListener('triggerdown', this.onTriggerDown);
+    const right = document.querySelector('#right-hand');
+    right?.addEventListener('triggerdown', this.onTriggerDown);
   },
   remove(this: BlockHardDropComponent) {
     window.removeEventListener('keydown', this.onKeyDown);
-    this.el.sceneEl?.removeEventListener('triggerdown', this.onTriggerDown);
+    const right = document.querySelector('#right-hand');
+    right?.removeEventListener('triggerdown', this.onTriggerDown);
   },
   handleKeyDown(this: BlockHardDropComponent, e: KeyboardEvent) {
     if (e.code === 'Space') {
       this.drop();
     }
   },
-  handleTriggerDown(this: BlockHardDropComponent) {
+  handleTriggerDown(this: BlockHardDropComponent, e: any) {
+    if (e?.detail?.hand && e.detail.hand !== 'right') return;
     this.drop();
   },
   drop(this: BlockHardDropComponent) {

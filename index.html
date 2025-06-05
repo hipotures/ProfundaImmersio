@@ -4,11 +4,63 @@
   <meta charset="UTF-8" />
   <title>Profunda Immersio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="/manifest.webmanifest" />
 </head>
 <body>
   <script type="module" src="/src/main.ts"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+    function bestKey() {
+      const diff = (document.getElementById('difficulty') as HTMLSelectElement).value;
+      const size = (document.getElementById('boards') as HTMLSelectElement).value;
+      return `highScore-${size}-${diff}`;
+    }
+    function showBest() {
+      const key = bestKey();
+      const val = localStorage.getItem(key) || '0';
+      const el = document.getElementById('best');
+      if (el) el.textContent = `Best: ${val}`;
+    }
+    document.getElementById('difficulty')?.addEventListener('change', showBest);
+    document.getElementById('boards')?.addEventListener('change', showBest);
+    function begin() {
+      const diff = (document.getElementById('difficulty') as HTMLSelectElement).value;
+      const size = (document.getElementById('boards') as HTMLSelectElement).value;
+      document.getElementById('menu')?.remove();
+      if ((window as any).startGame) (window as any).startGame(diff, size);
+    }
+    window.addEventListener('DOMContentLoaded', showBest);
+  </script>
+  <style>
+    #menu { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); padding: 10px; }
+    #menu button { display: block; margin: 5px; }
+  </style>
   <a-scene embedded>
     <a-entity id="game-root"></a-entity>
+    <a-entity id="left-hand" oculus-touch-controls="hand: left"></a-entity>
+    <a-entity id="right-hand" oculus-touch-controls="hand: right"></a-entity>
   </a-scene>
+  <div id="menu">
+    <label>Difficulty:
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+    <label>Board Size:
+      <select id="boards">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </label>
+    <div id="best" style="margin:4px 0">Best: 0</div>
+    <button onclick="begin()">Start</button>
+  </div>
 </body>
 </html>
