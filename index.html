@@ -4,11 +4,21 @@
   <meta charset="UTF-8" />
   <title>Profunda Immersio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="/manifest.webmanifest" />
 </head>
 <body>
   <script type="module" src="/src/main.ts"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+  </script>
   <a-scene embedded>
     <a-entity id="game-root"></a-entity>
+    <a-entity id="left-hand" oculus-touch-controls="hand: left"></a-entity>
+    <a-entity id="right-hand" oculus-touch-controls="hand: right"></a-entity>
   </a-scene>
 </body>
 </html>

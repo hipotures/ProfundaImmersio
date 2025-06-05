@@ -22,9 +22,13 @@ AFRAME.registerComponent('block-movement', {
   init(this: BlockMovementComponent) {
     this.onKeyDown = this.handleKeyDown.bind(this);
     window.addEventListener('keydown', this.onKeyDown);
+    const right = document.querySelector('#right-hand');
+    right?.addEventListener('thumbstickmoved', this.handleThumbstick.bind(this));
   },
   remove(this: BlockMovementComponent) {
     window.removeEventListener('keydown', this.onKeyDown);
+    const right = document.querySelector('#right-hand');
+    right?.removeEventListener('thumbstickmoved', this.handleThumbstick.bind(this));
   },
   handleKeyDown(this: BlockMovementComponent, e: KeyboardEvent) {
     const pos = this.el.object3D.position;
@@ -57,5 +61,22 @@ AFRAME.registerComponent('block-movement', {
     pos.y = Math.min(this.data.boardHeight - 0.5, pos.y);
 
     this.el.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
+    this.el.emit('block-moved');
+  },
+  handleThumbstick(this: BlockMovementComponent, e: any) {
+    const threshold = 0.95;
+    const pos = this.el.object3D.position;
+    if (Math.abs(e.detail.x) > threshold) {
+      pos.x += Math.sign(e.detail.x);
+    }
+    if (Math.abs(e.detail.y) > threshold) {
+      pos.z += Math.sign(e.detail.y);
+    }
+    const halfW = this.data.boardWidth / 2;
+    const halfD = this.data.boardDepth / 2;
+    pos.x = Math.max(-halfW + 0.5, Math.min(halfW - 0.5, pos.x));
+    pos.z = Math.max(-halfD + 0.5, Math.min(halfD - 0.5, pos.z));
+    this.el.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
+    this.el.emit('block-moved');
   }
 });
