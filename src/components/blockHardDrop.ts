@@ -38,7 +38,8 @@ AFRAME.registerComponent('block-hard-drop', {
       this.drop();
     }
   },
-  handleTriggerDown(this: BlockHardDropComponent) {
+  handleTriggerDown(this: BlockHardDropComponent, e: any) {
+    if (e?.detail?.hand && e.detail.hand !== 'right') return;
     this.drop();
   },
   drop(this: BlockHardDropComponent) {
